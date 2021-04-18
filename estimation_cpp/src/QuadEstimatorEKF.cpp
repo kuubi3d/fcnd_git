@@ -11,6 +11,10 @@ using Eigen::VectorXf;
 
 #include "vector_iterator.h"
 
+// :::: for C++ itrerator
+#include <iostream>
+#include <vector>
+// ::::
 
 using namespace SLR;
 
@@ -193,11 +197,19 @@ VectorXf QuadEstimatorEKF::PredictState(VectorXf curState, float dt, V3F accel, 
     std::cout << predictedState << std::endl;
   }
 
-  for (it = predictedState.begin(); it != predictedState.end(); ++it) 
-  {
-    predictedState(it) = curState(it) + dt * acc_w.x; // + acc_w.y, acc_w.z - dt * CONST_GRAVITY
-    std::cout << predictedState << std::endl;
-  }
+  /* ::::
+  std::vector<int> myvector = {10,20,30};
+
+  auto it = myvector.emplace ( myvector.begin()+1, 100 );
+  myvector.emplace ( it, 200 );
+  myvector.emplace ( myvector.end(), 300 );
+
+  std::cout << "myvector contains:";
+  for (auto& x: myvector)
+    std::cout << ' ' << x;
+  std::cout << '\n';
+  */
+
   /* :::: +
 
   From Darienmt:
