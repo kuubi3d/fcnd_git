@@ -187,7 +187,12 @@ VectorXf QuadEstimatorEKF::PredictState(VectorXf curState, float dt, V3F accel, 
 
   // :::: Iterate calculaton of predictedState() matrix for dt *curState() and dt * acc_w.x, w.y, w.z
 
-  std::vector<int>::iterator it;  
+  std::vector<int>::iterator it; 
+  for (int i = 1; i <=10; i++)
+  {
+    it.push_back(1);
+  
+  }
   
   V3F acc_w = attitude.Rotate_BtoI(accel);
   
