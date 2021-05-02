@@ -17,3 +17,23 @@ int main ()
         cout << estimator[j] << endl;
     }
 }   
+
+int main ()
+{
+    vector<int> predictedState;
+    vector<int> curState;
+    for (int i =1; i <=10; i++)
+    {
+        predictedState.push_back(i);
+        curState.push_back(i+10)
+        
+    }
+
+    for (int j = 0; j<10; j++)
+    {
+        cout << predictedState[j] << endl;
+
+
+    }
+
+}   
