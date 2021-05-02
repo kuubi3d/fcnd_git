@@ -19,11 +19,11 @@ int main ()
         cout << i << endl;
     }
 
-    for (int j = 0; j<10; j++)
+    for (int ps = 0; predictedState.size(); ps++)
     {
-        cout << predictedState[j] << endl;
-        predictedState[j] = curState[j] + dt * curState[j+3];
-        cout << predictedState[j] << endl;
+        cout << predictedState.size() << endl;
+        predictedState[ps] = curState[ps] + dt * curState[ps+3];
+        cout << ps << ". Predicted State " << predictedState[ps] << endl;
+        cout << ps << endl;
     }
-
 }   

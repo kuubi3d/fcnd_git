@@ -188,16 +188,23 @@ VectorXf QuadEstimatorEKF::PredictState(VectorXf curState, float dt, V3F accel, 
 
   // :::: Iterate calculaton of predictedState() matrix for dt *curState() and dt * acc_w.x, w.y, w.z
 
+cout << predictedState.size() << endl;
 
-
-for (int ps = 0; ps<10; ps++)
+for (int ps = 0; (predictedState.size())-5; ps++)
   {
-      cout << predictedState[ps] << endl;
+      
       predictedState[ps] = curState[ps] + dt * curState[ps+3];
-      cout << "Predicted State " << predictedState[ps] << endl;
+      cout << ps << ". Predicted State " << predictedState[ps] << endl;
       cout << ps << endl;
+      
   }
-   
+  
+  V3F acc_w = attitude.Rotate_BtoI(accel);
+
+  predictedState(3) = curState(3) + dt * acc_w.x;
+  predictedState(4) = curState(4) + dt * acc_w.y;
+  predictedState(5) = curState(5) + dt * acc_w.z - dt * CONST_GRAVITY;
+
   /* 
    
    std::vector<int>::iterator it; 
@@ -228,9 +235,10 @@ for (int ps = 0; ps<10; ps++)
   std::cout << '\n';
   */
 
+ 
   /* :::: +
 
-  From Darienmt:
+  //From Darienmt:
 
   predictedState(0) = curState(0) + dt * curState(3);
   predictedState(1) = curState(1) + dt * curState(4);
@@ -241,6 +249,7 @@ for (int ps = 0; ps<10; ps++)
   predictedState(3) = curState(3) + dt * acc_w.x;
   predictedState(4) = curState(4) + dt * acc_w.y;
   predictedState(5) = curState(5) + dt * acc_w.z - dt * CONST_GRAVITY;
+  
   
   /  :::: */
 
