@@ -14,6 +14,9 @@
 using SLR::Quaternion;
 using SLR::ToUpper;
 
+#include <vector>
+#include <iostream>
+
 void KeyboardInteraction(V3F& force, shared_ptr<Visualizer_GLUT> vis);
 bool receivedResetRequest = true;
 bool paused = false;
@@ -320,4 +323,26 @@ void PrintHelpText()
   printf("C - clear all graphs\n");
   printf("R - reset simulation\n");
   printf("Space - pause simulation\n");
+
+// :::: Variable definition
+/*
+  vector<int> predictedState;
+  vector<int> curState;
+  float dt;
+  
+  for (int j = 0; j<10; j++)
+    {
+      cout << predictedState[j] << endl;
+    } 
+  
+  
+
+  for (int j = 0; j<10; j++)
+  {
+      cout << predictedState[j] << endl;
+      predictedState[j] = curState[j] + dt * curState[j+3];
+      cout << predictedState[j] << endl;
+  }
+  */
 }
+  

@@ -4,7 +4,7 @@
 using namespace std;
 
 // :::: Variable definition
-int dt;
+float dt;
 
 int main ()
 {

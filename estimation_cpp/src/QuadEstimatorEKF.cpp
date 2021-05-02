@@ -14,6 +14,7 @@ using Eigen::VectorXf;
 // :::: for C++ itrerator
 #include <iostream>
 #include <vector>
+
 // ::::
 
 using namespace SLR;
@@ -187,7 +188,19 @@ VectorXf QuadEstimatorEKF::PredictState(VectorXf curState, float dt, V3F accel, 
 
   // :::: Iterate calculaton of predictedState() matrix for dt *curState() and dt * acc_w.x, w.y, w.z
 
-  std::vector<int>::iterator it; 
+
+
+for (int ps = 0; ps<10; ps++)
+  {
+      cout << predictedState[ps] << endl;
+      predictedState[ps] = curState[ps] + dt * curState[ps+3];
+      cout << "Predicted State " << predictedState[ps] << endl;
+      cout << ps << endl;
+  }
+   
+  /* 
+   
+   std::vector<int>::iterator it; 
   for (int i = 1; i <=10; i++)
   {
     it.push_back(1);
@@ -201,7 +214,7 @@ VectorXf QuadEstimatorEKF::PredictState(VectorXf curState, float dt, V3F accel, 
     predictedState(it) = curState(it) + dt * curState(it+3);
     std::cout << predictedState << std::endl;
   }
-
+  */
   /* ::::
   std::vector<int> myvector = {10,20,30};
 
