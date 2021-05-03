@@ -190,11 +190,11 @@ VectorXf QuadEstimatorEKF::PredictState(VectorXf curState, float dt, V3F accel, 
 
 cout << predictedState.size() << endl;
 
-for (int ps = 0; (predictedState.size())-5; ps++)
+for (int ps = 0; predictedState.size()-5; ps++)
   {
       
-      predictedState[ps] = curState[ps] + dt * curState[ps+3];
-      cout << ps << ". Predicted State " << predictedState[ps] << endl;
+      predictedState(ps) = curState(ps) + dt * curState(ps+3);
+      cout << ps << ". Predicted State " << predictedState(ps) << endl;
       cout << ps << endl;
       
   }
@@ -352,7 +352,23 @@ void QuadEstimatorEKF::UpdateFromGPS(V3F pos, V3F vel)
   //  - The GPS measurement covariance is available in member variable R_GPS
   //  - this is a very simple update
   ////////////////////////////// BEGIN STUDENT CODE ///////////////////////////
+  
+  /* :::: From Darienmt
+  
 
+  zFromX(0) = ekfState(0);
+  zFromX(1) = ekfState(1);
+  zFromX(2) = ekfState(2);
+  zFromX(3) = ekfState(3);
+  zFromX(4) = ekfState(4);
+  zFromX(5) = ekfState(5);
+
+  for ( int i = 0; i < 6; i++) {
+    hPrime(i,i) = 1;
+
+  ::::*/
+
+  for (int i = 0; ekfState.size(); i++)
   /////////////////////////////// END STUDENT CODE ////////////////////////////
 
   Update(z, hPrime, R_GPS, zFromX);
