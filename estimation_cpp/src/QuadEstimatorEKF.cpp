@@ -14,6 +14,7 @@ using Eigen::VectorXf;
 // :::: for C++ itrerator
 #include <iostream>
 #include <vector>
+
 // ::::
 
 using namespace SLR;
@@ -187,7 +188,26 @@ VectorXf QuadEstimatorEKF::PredictState(VectorXf curState, float dt, V3F accel, 
 
   // :::: Iterate calculaton of predictedState() matrix for dt *curState() and dt * acc_w.x, w.y, w.z
 
-  std::vector<int>::iterator it; 
+cout << predictedState.size() << endl;
+
+for (int ps = 0; predictedState.size()-5; ps++)
+  {
+      
+      predictedState(ps) = curState(ps) + dt * curState(ps+3);
+      cout << ps << ". Predicted State " << predictedState(ps) << endl;
+      cout << ps << endl;
+      
+  }
+  
+  V3F acc_w = attitude.Rotate_BtoI(accel);
+
+  predictedState(3) = curState(3) + dt * acc_w.x;
+  predictedState(4) = curState(4) + dt * acc_w.y;
+  predictedState(5) = curState(5) + dt * acc_w.z - dt * CONST_GRAVITY;
+
+  /* 
+   
+   std::vector<int>::iterator it; 
   for (int i = 1; i <=10; i++)
   {
     it.push_back(1);
@@ -201,7 +221,7 @@ VectorXf QuadEstimatorEKF::PredictState(VectorXf curState, float dt, V3F accel, 
     predictedState(it) = curState(it) + dt * curState(it+3);
     std::cout << predictedState << std::endl;
   }
-
+  */
   /* ::::
   std::vector<int> myvector = {10,20,30};
 
@@ -215,9 +235,10 @@ VectorXf QuadEstimatorEKF::PredictState(VectorXf curState, float dt, V3F accel, 
   std::cout << '\n';
   */
 
+ 
   /* :::: +
 
-  From Darienmt:
+  //From Darienmt:
 
   predictedState(0) = curState(0) + dt * curState(3);
   predictedState(1) = curState(1) + dt * curState(4);
@@ -228,6 +249,7 @@ VectorXf QuadEstimatorEKF::PredictState(VectorXf curState, float dt, V3F accel, 
   predictedState(3) = curState(3) + dt * acc_w.x;
   predictedState(4) = curState(4) + dt * acc_w.y;
   predictedState(5) = curState(5) + dt * acc_w.z - dt * CONST_GRAVITY;
+  
   
   /  :::: */
 
@@ -330,6 +352,28 @@ void QuadEstimatorEKF::UpdateFromGPS(V3F pos, V3F vel)
   //  - The GPS measurement covariance is available in member variable R_GPS
   //  - this is a very simple update
   ////////////////////////////// BEGIN STUDENT CODE ///////////////////////////
+  
+  /* :::: From Darienmt
+  
+
+  zFromX(0) = ekfState(0);
+  zFromX(1) = ekfState(1);
+  zFromX(2) = ekfState(2);
+  zFromX(3) = ekfState(3);
+  zFromX(4) = ekfState(4);
+  zFromX(5) = ekfState(5);
+
+  for ( int i = 0; i < 6; i++) {
+    hPrime(i,i) = 1;
+
+  ::::*/
+
+  for (int i = 0; ekfState.size(); i++)
+  {
+    zFromX(i) = ekfState(i);
+    hPrime(i,i) = 1;
+  }
+
 
   /////////////////////////////// END STUDENT CODE ////////////////////////////
 

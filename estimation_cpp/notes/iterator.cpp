@@ -3,17 +3,27 @@
 
 using namespace std;
 
+// :::: Variable definition
+float dt;
+
 int main ()
 {
-    vector<int> estimator;
-
+    vector<int> predictedState;
+    vector<int> curState;
+    
     for (int i =1; i <=10; i++)
     {
-        estimator.push_back(i);
+        predictedState.push_back(i);
+        curState.push_back(i+10);
+        dt = i;
+        cout << i << endl;
     }
 
-    for (int j = 0; j<10; j++)
+    for (int ps = 0; predictedState.size(); ps++)
     {
-        cout << estimator[j] << endl;
+        cout << predictedState.size() << endl;
+        predictedState[ps] = curState[ps] + dt * curState[ps+3];
+        cout << ps << ". Predicted State " << predictedState[ps] << endl;
+        cout << ps << endl;
     }
 }   
