@@ -190,17 +190,18 @@ VectorXf QuadEstimatorEKF::PredictState(VectorXf curState, float dt, V3F accel, 
 
 cout << predictedState.size() << endl;
 
-for (int ps = 0; predictedState.size()-5; ps++)
+for (int ps = 0; ps < predictedState.size()-5; ps++)
   {
       
-      predictedState(ps) = curState(ps) + dt * curState(ps+3);
-      cout << ps << ". Predicted State " << predictedState(ps) << endl;
-      cout << ps << endl;
+    predictedState(ps) = curState(ps) + dt * curState(ps+3);
+    cout << ps << ". Predicted State " << predictedState(ps) << endl;
+    cout << ps << ". Current State " << curState(ps+3) << endl;
+    cout << ps << endl;
       
   }
   
   V3F acc_w = attitude.Rotate_BtoI(accel);
-
+  // :::: +  see if can make overload function
   predictedState(3) = curState(3) + dt * acc_w.x;
   predictedState(4) = curState(4) + dt * acc_w.y;
   predictedState(5) = curState(5) + dt * acc_w.z - dt * CONST_GRAVITY;
@@ -366,14 +367,16 @@ void QuadEstimatorEKF::UpdateFromGPS(V3F pos, V3F vel)
   for ( int i = 0; i < 6; i++) {
     hPrime(i,i) = 1;
 
-  ::::*/
+  
 
-  for (int i = 0; ekfState.size(); i++)
+  for (int i = 0; i < ekfState.size(); i++)
   {
     zFromX(i) = ekfState(i);
     hPrime(i,i) = 1;
-  }
 
+    cout << zFromX;
+  }
+  ::::*/
 
   /////////////////////////////// END STUDENT CODE ////////////////////////////
 
