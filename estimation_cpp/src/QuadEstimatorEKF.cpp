@@ -282,6 +282,122 @@ MatrixXf QuadEstimatorEKF::GetRbgPrime(float roll, float pitch, float yaw)
   //   that your calculations are reasonable
 
   ////////////////////////////// BEGIN STUDENT CODE ///////////////////////////
+  
+  //From Darienmt:
+  // :::: numpy.cross(a, b, axisa=-1, axisb=-1, axisc=-1, axis=None)
+
+for (int ps = 0; ps < predictedState.size()-5; ps++)
+  {
+      
+    predictedState(ps) = curState(ps) + dt * curState(ps+3);
+    cout << ps << ". Predicted State " << predictedState(ps) << endl;
+    cout << ps << ". Current State " << curState(ps+3) << endl;
+    cout << ps << endl;
+      
+  }
+  
+  float cosTheta = cos(pitch);
+  float sinTheta = sin(pitch);
+  
+  float cosPhi = cos(roll);
+  float sinPhi = sin(roll);
+  
+  float sinPsi = sin(yaw);
+  float cosPsi = cos(yaw);
+/* 
+cout << RbgPrime << endl;
+
+for (int rbg = 0; rbg < 2; rbg++)
+  {
+    for (int j = 0; j < 3; j++)  
+    
+    cout << ps << ". Predicted State " << predictedState(ps) << endl;
+    cout << ps << ". Current State " << curState(ps+3) << endl;
+    cout << ps << endl;
+      
+  }
+  RbgPrime(0,0) = - cosTheta * sinPsi;
+  RbgPrime(0,1) = - sinPhi  * sinTheta * sinPsi - cosTheta * cosPsi;
+  RbgPrime(0,2) = - cosPhi  * sinTheta * sinPsi + sinPhi   * cosPsi;
+  
+  RbgPrime(1,0) = cosTheta * cosPsi;
+  RbgPrime(1,1) = sinPhi  * sinTheta * cosPsi - cosPhi * sinPsi;
+  RbgPrime(1,2) = cosPhi  * sinTheta * cosPsi + sinPhi * sinPsi;
+
+
+/* ...............................................
+  %%add_to EKF
+
+@property
+def R_bg(self):
+    
+    R_bg=np.array([[cos(self.phi)*cos(self.psi)-sin(self.phi)*cos(self.theta)*sin(self.psi), 
+                    cos(self.phi)*sin(self.psi)+sin(self.phi)*cos(self.theta)*cos(self.psi),
+                    sin(self.phi)*sin(self.theta)],
+                   [-sin(self.phi)*cos(self.psi)-cos(self.phi)*cos(self.theta)*sin(self.psi),
+                    -sin(self.phi)*sin(self.psi)+cos(self.phi)*cos(self.theta)*cos(self.psi),
+                    cos(self.phi)*sin(self.theta)],
+                   [sin(self.theta)*sin(self.psi),-sin(self.theta)*cos(self.psi),cos(self.theta)]])
+    
+    return R_bg
+
+@property
+def R_bg_prime(self):
+
+    R = np.array([[-cos(self.phi)*sin(self.psi)-sin(self.phi)*cos(self.theta)*cos(self.psi),
+                   cos(self.phi)*cos(self.psi)-sin(self.phi)*cos(self.theta)*sin(self.psi), 0.0],
+                  [sin(self.phi)*sin(self.psi)-cos(self.phi)*cos(self.theta)*cos(self.psi),
+                  -sin(self.phi)*cos(self.psi),0.0],
+                  [sin(self.theta)*cos(self.psi),sin(self.theta)*sin(self.psi),0.0]])
+    
+    
+    
+    return np.transpose(R)
+
+
+@property
+def a(self):
+    a= np.zeros((self.X.shape[0],1))
+    
+    a = np.array([[self.mu[0] + self.mu[3] * self.dt],
+                  [self.mu[1] + self.mu[4] * self.dt],
+                  [self.mu[2] + self.mu[5] * self.dt],
+                  [self.mu[3]],
+                  [self.mu[4]],
+                  [self.mu[5] + self.gravity * self.dt],
+                  [self.mu[6]]])
+    
+    
+    return a 
+
+@property
+def b(self):
+    
+    b= np.zeros((self.X.shape[0],4))
+    b[3:6,:3] = self.R_bg
+    b[-1,-1] = 1
+    
+    return b 
+
+
+def g(self,u):
+    
+    g_3d = np.add(self.a[:,:,0], np.matmul(self.b, (u* self.dt)))
+    
+    return g_3d
+
+
+def g_prime(self,u):
+    
+    g_prime=np.identity(self.mu.shape[0])
+    g_prime[0,3] = self.dt
+    g_prime[1,4] = self.dt
+    g_prime[2,5] = self.dt
+    g_prime[3:6,5:6] =np.matmul(self.R_bg_prime, (u[:3]*self.dt) )
+    
+    return g_prime
+
+*/
 
 
   /////////////////////////////// END STUDENT CODE ////////////////////////////
