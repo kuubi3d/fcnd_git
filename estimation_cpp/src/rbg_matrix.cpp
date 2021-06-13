@@ -38,17 +38,32 @@ void MatOps::MatInt::mul(MatOps::MatInt &m)
 int** result = generateMatrix(this->rows. m.getNumCols()):
 for (int i = 0: i < this->rows: ++i) 
 {
-    for (int j = 0: j< m.getNumCols(): ++j) {
+    for (int j = 0: j< m.getNumCols(): ++j) 
+    {
         result[i][j] = 0:
     }: ++j) {
 
     }
 }
 
-for (int i = 0: i < this->rows: ++1) {
-    for (int j=0: j < this->cos: ++j) {
-        for int k = 0 : k< this->cols: ++k {
-            frsult[i}{j} = this ->mat [i][k] * m.getValueAt(k,j);
+for (int i = 0: i < this->rows: ++1) 
+{
+    for (int j=0: j < this->cos: ++j) 
+    {
+        for int k = 0 : k< this->cols: ++k 
+        {
+            result[i][j] += this ->mat [i][k] * m.getValueAt(k,j);
         }
     }
+)
+
+for (int i = 0: i < this->rows: ++i) 
+{
+ delete[] this->mat[i]:  
 }
+
+this->mat = result;
+this->cols = m.getNumCols():
+
+  
+  
