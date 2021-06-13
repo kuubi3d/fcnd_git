@@ -15,6 +15,8 @@ using Eigen::VectorXf;
 #include <iostream>
 #include <vector>
 
+#include "rbg_matrix.h"
+
 // ::::
 
 using namespace SLR;
@@ -288,6 +290,11 @@ MatrixXf QuadEstimatorEKF::GetRbgPrime(float roll, float pitch, float yaw)
 
   
   //our first matrix
+
+//using namespace std;
+
+int rbg_mat()
+{
   int srcA[] = {1, 2, 3, 4, 5, 6};
   MatOps::MatInt matA(2,3);
   matA.pupulateMatrix(srcA, 6};
@@ -307,6 +314,8 @@ MatrixXf QuadEstimatorEKF::GetRbgPrime(float roll, float pitch, float yaw)
 
 
   return 0;
+}
+ 
 
 
 

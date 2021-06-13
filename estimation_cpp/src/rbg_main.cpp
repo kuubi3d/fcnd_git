@@ -1,4 +1,28 @@
 
-    
-//our first matrix
-int srcA[] = []
+      //our first matrix
+
+//using namespace std;
+
+int rbg_mat()
+{
+  int srcA[] = {1, 2, 3, 4, 5, 6};
+  MatOps::MatInt matA(2,3);
+  matA.pupulateMatrix(srcA, 6};
+
+  //our second matrix
+  int srcB[] = {6, 5, 4, 3, 2, 1};
+  MatOps::MatInt matB(3,2);
+  matB.pupulateMatrix(srcB, 6};
+
+  matA.print();
+  cout << endl;
+  matB.print();
+  cout << endl;
+  matA.add(matB);
+  matA.print();
+
+
+
+  return 0;
+}
+ 
