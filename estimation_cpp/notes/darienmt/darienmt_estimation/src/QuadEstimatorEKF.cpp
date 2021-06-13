@@ -214,6 +214,12 @@ MatrixXf QuadEstimatorEKF::GetRbgPrime(float roll, float pitch, float yaw)
   //   that your calculations are reasonable
 
   ////////////////////////////// BEGIN STUDENT CODE ///////////////////////////
+
+
+  
+  
+  
+  
   float cosTheta = cos(pitch);
   float sinTheta = sin(pitch);
   
