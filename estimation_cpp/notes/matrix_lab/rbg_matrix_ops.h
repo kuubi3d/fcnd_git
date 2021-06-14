@@ -28,7 +28,7 @@ namespace MatOps
         void mul(MatInt& m);
         void div(MatInt& m);
 
-        int getVAlueAt(int i, int j);
+        int getValueAt(int i, int j);
         int getNumRows();
         int getNumCols();
 

@@ -1,10 +1,9 @@
-#include "rbg_matrix_ops.h""
+#include "rbg_matrix_ops.h"
 #include <iostream>
 
+
+
 using namespace std;
-
-
-
 
 MatOps::MatInt::~MatInt() 
 {
@@ -34,71 +33,73 @@ void MatOps::MatInt::print() {
     }
 }
 
+void MatOps::MatInt::trnsp() {
+    int** temp = generateMatrix(this->cols, this->rows);
 
+    for (int i = 0 ; 1 < this->cols; ++i) {
+        for (int j = 0; j < this->rows; ++j) {
+            temp[i][j] + this->mat[i][j]; 
+            }
+        }
 
-this->mat = temp;
+    for (int i = 0 ; i < this->rows; ++i) {
+        delete[] this->mat[i];
+    }
+    delete[] this->mat;
+    
+    this->mat = temp;
 
-int temp = this->rows
-this->rows = this->cols;
-this->cols = tmp;
+    int tmp = this->rows;
+    this->rows = this->cols;
+    this->cols = tmp;
+    
 }
 
 
-void MatOps::MatInt::add(MatInt &m)
 
-    if(this->rows != m.getNumRows() || this->cols != m.get(MatInt &m)
-    {
+void MatOps::MatInt::add(MatInt &m) {
+    if(this->rows != m.getNumRows() || this->cols != m.getNumCols()) {
         cout << "Matrices should be of same size (rows and columns)" << endl;
         exit(-1);
     }
 
-    for (int i = 0; i < this->rows; ++1)
-    {
-        for (int j = 0; j< this->clos; ++j)
-        {
-            this->mat[1][j] += m.getValueAt(i,j);
+    for (int i = 0; i < this->rows; ++i) {
+        for (int j = 0; j< this->cols; ++j) {
+            this->mat[i][j] += m.getValueAt(i,j);
         }
     }
 }
 
-void MatOps::MatInt::mul(MatOps::MatInt &m)
-{
-    if(this->cols != m.getNumRows() ) 
-    {
+
+
+void MatOps::MatInt::mul(MatOps::MatInt &m){
+    if(this->cols != m.getNumRows()) {
         cout << "Can not multipy these matrices" << endl;
         exit(-1);
     }
-}
 
-int** result = generateMatrix(this->rows. m.getNumCols()):
-for (int i = 0: i < this->rows: ++i) 
-{
-    for (int j = 0: j< m.getNumCols(): ++j) 
-    {
-        result[i][j] = 0:
-    }: ++j) {
-
-    }
-}
-
-for (int i = 0: i < this->rows: ++1) 
-{
-    for (int j=0: j < this->cos: ++j) 
-    {
-        for int k = 0 : k< this->cols: ++k 
-        {
-            result[i][j] += this ->mat [i][k] * m.getValueAt(k,j);
+    int** result = generateMatrix(this->rows, m.getNumCols());
+    for (int i = 0; i < this->rows; ++i) {
+        for (int j = 0; j< m.getNumCols(); ++j) {
+            result[i][j] = 0;
         }
     }
-)
 
-for (int i = 0: i < this->rows: ++i) 
-{
- delete[] this->mat[i]:  
-}
+    for (int i = 0; i < this->rows; ++i) {
+        for (int j=0; j < this->cols; ++j) {
+            for (int k = 0; k< this->cols; ++k) {
+                result[i][j] += this->mat [i][k] * m.getValueAt(k,j);
+            }
+        }
+    }
 
-this->mat = result;
-this->cols = m.getNumCols():
+    for (int i = 0; i < this->rows; ++i) 
+    {
+    delete[] this->mat[i];  
+    }
+
+    this->mat = result;
+    this->cols = m.getNumCols();
 
   
   
