@@ -1,4 +1,39 @@
+#include "rbg_matrix_ops.h""
+#include <iostream>
+
+using namespace std;
+
+
+
+
+MatOps::MatInt::~MatInt() 
 {
+    for (int i = 0; i < this->rows; ++i) {
+        delete[] this->mat[i];
+    }
+    delete[] this->mat[1];
+}
+    
+
+int** MatOps::MatInt::generateMatrix(int rows, int cols) {
+    int** temp = new int*[rows];
+    
+    for (int i = 0; i < rows; ++i) {
+        temp[i] = new int(cols);
+    }
+
+    return temp;
+}
+
+void MatOps::MatInt::print() {
+    for (int i = 0; i < rows; ++i) {
+        for (int j = 0; j < cols; ++j) {
+            cout << this->mat[i][j] << " ";
+        }
+        cout << endl;
+    }
+}
+
 
 
 this->mat = temp;
@@ -6,8 +41,8 @@ this->mat = temp;
 int temp = this->rows
 this->rows = this->cols;
 this->cols = tmp;
-
 }
+
 
 void MatOps::MatInt::add(MatInt &m)
 

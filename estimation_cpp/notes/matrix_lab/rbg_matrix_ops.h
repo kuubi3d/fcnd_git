@@ -2,7 +2,7 @@
 #ifndef CPP_MATRIX_OPERATIONS_RGB_MATRIX.H
 #define CPP_MATRIX_OPERATIONS_RGB_MATRIX.H   
     
-namespace MatOPs
+namespace MatOps
 {
     class MatInt
     {
@@ -13,7 +13,7 @@ namespace MatOPs
 
     public:
 
-        MatInt(int rows, int cols) : rows(rows), cols(cols) [ }
+        MatInt(int rows, int cols) : rows(rows), cols(cols) { }
         /* {
         this -> mat = generateMatrix(this->rows.)  
         } 
