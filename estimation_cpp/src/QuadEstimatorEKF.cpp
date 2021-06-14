@@ -15,6 +15,8 @@ using Eigen::VectorXf;
 #include <iostream>
 #include <vector>
 
+#include "rbg_matrix.h"
+
 // ::::
 
 using namespace SLR;
@@ -286,6 +288,41 @@ MatrixXf QuadEstimatorEKF::GetRbgPrime(float roll, float pitch, float yaw)
   //From Darienmt:
   // :::: numpy.cross(a, b, axisa=-1, axisb=-1, axisc=-1, axis=None)
 
+  
+  //our first matrix
+
+using namespace std;
+
+int rbg_mat();
+ {
+
+  int srcA[] = {1, 2, 3, 4, 5, 6};
+  MatOps::MatInt matA(2,3);
+  matA.pupulateMatrix(srcA, 6);
+
+  //our second matrix
+  int srcB[] = {6, 5, 4, 3, 2, 1};
+  MatOps::MatInt matB(3,2);
+  matB.pupulateMatrix(srcB, 6);
+
+  matA.print();
+  cout << endl;
+  matB.print();
+  cout << endl;
+  matA.add(matB);
+  matA.print();
+
+
+
+  return 0;
+}
+ 
+
+
+
+
+
+
 for (int ps = 0; ps < predictedState.size()-5; ps++)
   {
       
@@ -304,7 +341,7 @@ for (int ps = 0; ps < predictedState.size()-5; ps++)
   
   float sinPsi = sin(yaw);
   float cosPsi = cos(yaw);
-/* 
+/*:::: 
 cout << RbgPrime << endl;
 
 for (int rbg = 0; rbg < 2; rbg++)
