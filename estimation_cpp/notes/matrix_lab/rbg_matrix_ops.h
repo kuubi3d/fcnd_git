@@ -1,6 +1,7 @@
     
-#ifndef CPP_MATRIX_OPERATIONS_RGB_MATRIX.H
-#define CPP_MATRIX_OPERATIONS_RGB_MATRIX.H   
+//#ifndef CPP_MATRIX_OPERATIONS_RGB_MATRIX.H
+//#define CPP_MATRIX_OPERATIONS_RGB_MATRIX.H   
+
     
 namespace MatOps
 {
@@ -21,7 +22,7 @@ namespace MatOps
         ~MatInt();
 
         int** generateMatrix(int rows, int cols);
-        void populateMatrix(int* src, int size);
+        void populateMatrix(int *src, int size);
         void trnsp();
         void add(MatInt& m);
         void sub(MatInt& m);
@@ -37,7 +38,7 @@ namespace MatOps
     }; 
 }    
     
-#endif //CPP_MATRIX_OPERATIONS_RGB_MATRIX.H
+//#endif //CPP_MATRIX_OPERATIONS_RGB_MATRIX.H
 
 
 

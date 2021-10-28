@@ -9,7 +9,7 @@
 
 using namespace std;
 
-int rbg_mat()
+int rbg_main()
 {
   int srcA[] = {1, 2, 3, 4, 5, 6};
   MatOps::MatInt matA(2,3);

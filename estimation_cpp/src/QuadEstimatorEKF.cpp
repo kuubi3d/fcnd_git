@@ -8,16 +8,15 @@
 #include "Eigen/SVD"
 using Eigen::MatrixXf;
 using Eigen::VectorXf;
+using Eigen::Matrix3f;
+//#include "vector_iterator.h"
 
-#include "vector_iterator.h"
-
-// :::: for C++ itrerator
+// :::: for itrerator
 #include <iostream>
 #include <vector>
-
-#include "rbg_matrix.h"
-
 // ::::
+
+
 
 using namespace SLR;
 
@@ -108,13 +107,57 @@ void QuadEstimatorEKF::UpdateFromIMU(V3F accel, V3F gyro)
   // (replace the code below)
   // make sure you comment it out when you add your own code -- otherwise e.g. you might integrate yaw twice
 
-  float predictedPitch = pitchEst + dtIMU * gyro.y;
-  float predictedRoll = rollEst + dtIMU * gyro.x;
-  ekfState(6) = ekfState(6) + dtIMU * gyro.z;	// yaw
+  //  float predictedPitch = pitchEst + dtIMU * gyro.y;
+  //  float predictedRoll = rollEst + dtIMU * gyro.x;
+  //  ekfState(6) = ekfState(6) + dtIMU * gyro.z;  // yaw
+  
+  
+  
+  //:::: Mat3x3F EulerMatrix (Mat3x3F eul);
+  
+  Mat3x3F ro_mat =  Mat3x3F::Zeros();
+  V3F dx_ang;
+ 
+  float phi = rollEst;
+  float theta = pitchEst;
+  //float psi = ekfState(6);
+  
 
+  // Rotation Matrix
+
+  /* ro_mat [3][3] = {
+    
+    1, (sin(phi) * tan(theta)), (cos(phi) * tan(theta)), 
+    0, cos(phi), -sin(phi),
+    0, (sin(phi) / cos(theta)), (cos(phi) / cos(theta)) 
+    
+    };
+  */
+    
+
+  ro_mat[0,0] = 1;
+  ro_mat[0,1] = sin(phi) * tan(theta);
+  ro_mat[0,2] = cos(phi) * tan(theta);
+  ro_mat[1,0] = 0;
+  ro_mat[1,1] = cos(phi);
+  ro_mat[1,2] = -sin(phi);
+  ro_mat[2,0] = 0;
+  ro_mat[2,1] = sin(phi) / cos(theta);
+  ro_mat[2,2] = cos(phi) / cos(theta);
+
+      
+  // Euler Derivaties: phi_dot, theta_dot, and psi_dot
+  
+  dx_ang = ro_mat * gyro;
+       
+  float predictedPitch = pitchEst + dx_ang.y * dtIMU;
+  float predictedRoll = rollEst + dx_ang.x * dtIMU;
+  ekfState(6) = ekfState(6) + dx_ang.z * dtIMU;	// yaw
+  
   // normalize yaw to -pi .. pi
   if (ekfState(6) > F_PI) ekfState(6) -= 2.f*F_PI;
   if (ekfState(6) < -F_PI) ekfState(6) += 2.f*F_PI;
+
 
   /////////////////////////////// END STUDENT CODE ////////////////////////////
 
@@ -152,11 +195,6 @@ void QuadEstimatorEKF::UpdateTrueError(V3F truePos, V3F trueVel, Quaternion<floa
   velErrorMag = trueVel.dist(V3F(ekfState(3), ekfState(4), ekfState(5)));
 }
 
-
-
-// :::: Populate predictedState() matrix for dt *curState() and dt * acc_w.x, w.y, w.z
-
-
 VectorXf QuadEstimatorEKF::PredictState(VectorXf curState, float dt, V3F accel, V3F gyro)
 {
   assert(curState.size() == QUAD_EKF_NUM_STATES);
@@ -180,86 +218,27 @@ VectorXf QuadEstimatorEKF::PredictState(VectorXf curState, float dt, V3F accel, 
 
   Quaternion<float> attitude = Quaternion<float>::FromEuler123_RPY(rollEst, pitchEst, curState(6));
 
-
-
   ////////////////////////////// BEGIN STUDENT CODE ///////////////////////////
- 
-  // :::: +
   
-  // emplaceFunction(vector<int> predictedState,  int loc, int in);
+  cout << predictedState.size() << endl;
 
-  // :::: Iterate calculaton of predictedState() matrix for dt *curState() and dt * acc_w.x, w.y, w.z
+for (int i = 0; i < predictedState.size()-5; i++) {   
+    predictedState(i) = curState(i) + dt * curState(i+3);
 
-cout << predictedState.size() << endl;
 
-for (int ps = 0; ps < predictedState.size()-5; ps++)
-  {
-      
-    predictedState(ps) = curState(ps) + dt * curState(ps+3);
-    cout << ps << ". Predicted State " << predictedState(ps) << endl;
-    cout << ps << ". Current State " << curState(ps+3) << endl;
-    cout << ps << endl;
-      
+    cout << i << ". Predicted State " << predictedState(i) << endl;
+    cout << i << ". Current State " << curState(i+3) << endl;
+    cout << i << endl;    
   }
   
   V3F acc_w = attitude.Rotate_BtoI(accel);
-  // :::: +  see if can make overload function
+  
   predictedState(3) = curState(3) + dt * acc_w.x;
   predictedState(4) = curState(4) + dt * acc_w.y;
   predictedState(5) = curState(5) + dt * acc_w.z - dt * CONST_GRAVITY;
 
-  /* 
-   
-   std::vector<int>::iterator it; 
-  for (int i = 1; i <=10; i++)
-  {
-    it.push_back(1);
   
-  }
-  
-  V3F acc_w = attitude.Rotate_BtoI(accel);
-  
-  for (it = predictedState.begin(); it != predictedState.end(); ++it) 
-  {
-    predictedState(it) = curState(it) + dt * curState(it+3);
-    std::cout << predictedState << std::endl;
-  }
-  */
-  /* ::::
-  std::vector<int> myvector = {10,20,30};
-
-  auto it = myvector.emplace ( myvector.begin()+1, 100 );
-  myvector.emplace ( it, 200 );
-  myvector.emplace ( myvector.end(), 300 );
-
-  std::cout << "myvector contains:";
-  for (auto& x: myvector)
-    std::cout << ' ' << x;
-  std::cout << '\n';
-  */
-
- 
-  /* :::: +
-
-  //From Darienmt:
-
-  predictedState(0) = curState(0) + dt * curState(3);
-  predictedState(1) = curState(1) + dt * curState(4);
-  predictedState(2) = curState(2) + dt * curState(5);
-
-  V3F acc_w = attitude.Rotate_BtoI(accel);
-
-  predictedState(3) = curState(3) + dt * acc_w.x;
-  predictedState(4) = curState(4) + dt * acc_w.y;
-  predictedState(5) = curState(5) + dt * acc_w.z - dt * CONST_GRAVITY;
-  
-  
-  /  :::: */
-
-
   /////////////////////////////// END STUDENT CODE ////////////////////////////
-
-
 
   return predictedState;
 }
@@ -284,158 +263,24 @@ MatrixXf QuadEstimatorEKF::GetRbgPrime(float roll, float pitch, float yaw)
   //   that your calculations are reasonable
 
   ////////////////////////////// BEGIN STUDENT CODE ///////////////////////////
-  
-  //From Darienmt:
-  // :::: numpy.cross(a, b, axisa=-1, axisb=-1, axisc=-1, axis=None)
 
-  
-  //our first matrix
+  float sinPsi = sin(yaw);
+  float cosPsi = cos(yaw);
 
-using namespace std;
-
-int rbg_mat();
- {
-
-  int srcA[] = {1, 2, 3, 4, 5, 6};
-  MatOps::MatInt matA(2,3);
-  matA.pupulateMatrix(srcA, 6);
-
-  //our second matrix
-  int srcB[] = {6, 5, 4, 3, 2, 1};
-  MatOps::MatInt matB(3,2);
-  matB.pupulateMatrix(srcB, 6);
-
-  matA.print();
-  cout << endl;
-  matB.print();
-  cout << endl;
-  matA.add(matB);
-  matA.print();
-
-
-
-  return 0;
-}
- 
-
-
-
-
-
-
-for (int ps = 0; ps < predictedState.size()-5; ps++)
-  {
-      
-    predictedState(ps) = curState(ps) + dt * curState(ps+3);
-    cout << ps << ". Predicted State " << predictedState(ps) << endl;
-    cout << ps << ". Current State " << curState(ps+3) << endl;
-    cout << ps << endl;
-      
-  }
-  
   float cosTheta = cos(pitch);
   float sinTheta = sin(pitch);
   
   float cosPhi = cos(roll);
   float sinPhi = sin(roll);
   
-  float sinPsi = sin(yaw);
-  float cosPsi = cos(yaw);
-/*:::: 
-cout << RbgPrime << endl;
-
-for (int rbg = 0; rbg < 2; rbg++)
-  {
-    for (int j = 0; j < 3; j++)  
-    
-    cout << ps << ". Predicted State " << predictedState(ps) << endl;
-    cout << ps << ". Current State " << curState(ps+3) << endl;
-    cout << ps << endl;
-      
-  }
-  RbgPrime(0,0) = - cosTheta * sinPsi;
-  RbgPrime(0,1) = - sinPhi  * sinTheta * sinPsi - cosTheta * cosPsi;
-  RbgPrime(0,2) = - cosPhi  * sinTheta * sinPsi + sinPhi   * cosPsi;
   
-  RbgPrime(1,0) = cosTheta * cosPsi;
-  RbgPrime(1,1) = sinPhi  * sinTheta * cosPsi - cosPhi * sinPsi;
-  RbgPrime(1,2) = cosPhi  * sinTheta * cosPsi + sinPhi * sinPsi;
+  MatrixXf r_mat(3,3);
+  r_mat <<  (-cosTheta * sinPsi), ( - sinPhi  * sinTheta * sinPsi - cosTheta * cosPsi),(- sinPhi  * sinTheta * sinPsi - cosTheta * cosPsi),
+            (cosTheta * cosPsi), (sinPhi  * sinTheta * cosPsi - cosPhi * sinPsi), (cosPhi  * sinTheta * cosPsi + sinPhi * sinPsi),
+             0,0,0;
 
-
-/* ...............................................
-  %%add_to EKF
-
-@property
-def R_bg(self):
-    
-    R_bg=np.array([[cos(self.phi)*cos(self.psi)-sin(self.phi)*cos(self.theta)*sin(self.psi), 
-                    cos(self.phi)*sin(self.psi)+sin(self.phi)*cos(self.theta)*cos(self.psi),
-                    sin(self.phi)*sin(self.theta)],
-                   [-sin(self.phi)*cos(self.psi)-cos(self.phi)*cos(self.theta)*sin(self.psi),
-                    -sin(self.phi)*sin(self.psi)+cos(self.phi)*cos(self.theta)*cos(self.psi),
-                    cos(self.phi)*sin(self.theta)],
-                   [sin(self.theta)*sin(self.psi),-sin(self.theta)*cos(self.psi),cos(self.theta)]])
-    
-    return R_bg
-
-@property
-def R_bg_prime(self):
-
-    R = np.array([[-cos(self.phi)*sin(self.psi)-sin(self.phi)*cos(self.theta)*cos(self.psi),
-                   cos(self.phi)*cos(self.psi)-sin(self.phi)*cos(self.theta)*sin(self.psi), 0.0],
-                  [sin(self.phi)*sin(self.psi)-cos(self.phi)*cos(self.theta)*cos(self.psi),
-                  -sin(self.phi)*cos(self.psi),0.0],
-                  [sin(self.theta)*cos(self.psi),sin(self.theta)*sin(self.psi),0.0]])
-    
-    
-    
-    return np.transpose(R)
-
-
-@property
-def a(self):
-    a= np.zeros((self.X.shape[0],1))
-    
-    a = np.array([[self.mu[0] + self.mu[3] * self.dt],
-                  [self.mu[1] + self.mu[4] * self.dt],
-                  [self.mu[2] + self.mu[5] * self.dt],
-                  [self.mu[3]],
-                  [self.mu[4]],
-                  [self.mu[5] + self.gravity * self.dt],
-                  [self.mu[6]]])
-    
-    
-    return a 
-
-@property
-def b(self):
-    
-    b= np.zeros((self.X.shape[0],4))
-    b[3:6,:3] = self.R_bg
-    b[-1,-1] = 1
-    
-    return b 
-
-
-def g(self,u):
-    
-    g_3d = np.add(self.a[:,:,0], np.matmul(self.b, (u* self.dt)))
-    
-    return g_3d
-
-
-def g_prime(self,u):
-    
-    g_prime=np.identity(self.mu.shape[0])
-    g_prime[0,3] = self.dt
-    g_prime[1,4] = self.dt
-    g_prime[2,5] = self.dt
-    g_prime[3:6,5:6] =np.matmul(self.R_bg_prime, (u[:3]*self.dt) )
-    
-    return g_prime
-
-*/
-
+  RbgPrime = r_mat;
+  cout << RbgPrime << endl;
 
   /////////////////////////////// END STUDENT CODE ////////////////////////////
 
@@ -481,6 +326,27 @@ void QuadEstimatorEKF::Predict(float dt, V3F accel, V3F gyro)
   gPrime.setIdentity();
 
   ////////////////////////////// BEGIN STUDENT CODE ///////////////////////////
+  
+  
+  //:::: generate gPrime matrix.
+
+  if (gPrime.size() < 2) {
+    for(int i=0; i < 7; ++i) {
+      for(int j=0; j < 7; ++j) { 
+        
+        gPrime(i,j) = dt;
+        gPrime (i,j) = (RbgPrime(0) * accel).sum() * dt;
+       
+        }
+      }
+    }
+  else {
+    for(int i=3; i < 7; ++i) {
+    gPrime(i,6) = (RbgPrime(i-3) * accel).sum() * dt;  
+    }  
+  }
+
+  ekfCov = gPrime * ekfCov * gPrime.transpose() + Q;
 
 
   /////////////////////////////// END STUDENT CODE ////////////////////////////
@@ -505,23 +371,10 @@ void QuadEstimatorEKF::UpdateFromGPS(V3F pos, V3F vel)
   // Hints: 
   //  - The GPS measurement covariance is available in member variable R_GPS
   //  - this is a very simple update
+
   ////////////////////////////// BEGIN STUDENT CODE ///////////////////////////
   
-  /* :::: From Darienmt
   
-
-  zFromX(0) = ekfState(0);
-  zFromX(1) = ekfState(1);
-  zFromX(2) = ekfState(2);
-  zFromX(3) = ekfState(3);
-  zFromX(4) = ekfState(4);
-  zFromX(5) = ekfState(5);
-
-  for ( int i = 0; i < 6; i++) {
-    hPrime(i,i) = 1;
-
-  
-
   for (int i = 0; i < ekfState.size(); i++)
   {
     zFromX(i) = ekfState(i);
@@ -529,8 +382,7 @@ void QuadEstimatorEKF::UpdateFromGPS(V3F pos, V3F vel)
 
     cout << zFromX;
   }
-  ::::*/
-
+  
   /////////////////////////////// END STUDENT CODE ////////////////////////////
 
   Update(z, hPrime, R_GPS, zFromX);
@@ -551,8 +403,19 @@ void QuadEstimatorEKF::UpdateFromMag(float magYaw)
   //    (you don't want to update your yaw the long way around the circle)
   //  - The magnetomer measurement covariance is available in member variable R_Mag
   ////////////////////////////// BEGIN STUDENT CODE ///////////////////////////
-
-
+  
+  //:::: From Darienmt
+  
+  zFromX(0) = ekfState(6);
+  float diff = magYaw - ekfState(6);
+  if ( diff > F_PI ) {
+    zFromX(0) += 2.f*F_PI;
+  } else if ( diff < -F_PI ) {
+    zFromX(0) -= 2.f*F_PI;
+  }
+  
+  hPrime(0, 6) = 1;
+  
   /////////////////////////////// END STUDENT CODE ////////////////////////////
 
   Update(z, hPrime, R_Mag, zFromX);

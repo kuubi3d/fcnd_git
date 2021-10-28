@@ -96,6 +96,13 @@ void QuadEstimatorEKF::UpdateFromIMU(V3F accel, V3F gyro)
 //  float predictedPitch = pitchEst + dtIMU * gyro.y;
 //  float predictedRoll = rollEst + dtIMU * gyro.x;
 //  ekfState(6) = ekfState(6) + dtIMU * gyro.z;  // yaw
+
+  
+  
+
+
+  /*:::: From Darientmt
+
   float phi = rollEst;
   float theta = pitchEst;
 
@@ -113,10 +120,13 @@ void QuadEstimatorEKF::UpdateFromIMU(V3F accel, V3F gyro)
   float predictedRoll = rollEst + dtIMU * angle_dot.x;
   float predictedPitch = pitchEst + dtIMU * angle_dot.y;
   ekfState(6) = ekfState(6) + dtIMU * angle_dot.z;
+  ::::*/
+
 
   // normalize yaw to -pi .. pi
   if (ekfState(6) > F_PI) ekfState(6) -= 2.f*F_PI;
   if (ekfState(6) < -F_PI) ekfState(6) += 2.f*F_PI;
+
 
   /////////////////////////////// END STUDENT CODE ////////////////////////////
 
